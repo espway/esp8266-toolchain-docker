@@ -5,10 +5,11 @@ MAINTAINER Sakari Kapanen sakari.m.kapanen@gmail.com
 COPY ./esp-open-sdk /tmp/esp-open-sdk
 
 RUN addgroup -S ctng && adduser -S -g ctng ctng && chown -R ctng:ctng /tmp \
-  && apk add --no-cache make perl nodejs \
+  && apk add --no-cache make perl nodejs python \
   && apk add --no-cache --virtual build-dependencies \
        libtool gcc g++ gperf automake autoconf flex bison texinfo \
-       help2man sed gawk ncurses-dev wget bzip2 expat-dev patch
+       help2man sed gawk ncurses-dev wget bzip2 expat-dev patch py-pip
+  && pip install esptool
 
 USER ctng:ctng
 RUN cd /tmp/esp-open-sdk \
