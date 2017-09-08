@@ -1,0 +1,26 @@
+#!/bin/sh
+
+TOOLCHAIN=/tmp/build/xtensa-lx106-elf
+
+cd crosstool-NG
+# Configure and install crosstool-NG 
+./bootstrap
+./configure --prefix=`pwd`
+make
+make install
+
+# Configure and build the target toolchain
+./ct-ng xtensa-lx106-elf
+echo "CT_DEBUG_gdb=n" >> .config
+echo "CT_STRIP_TARGET_TOOLCHAIN_EXECUTABLES=y" >> .config
+echo "CT_INSTALL_DIR_RO=n" >> .config
+echo "CT_PREFIX_DIR=$TOOLCHAIN" >> .config
+./ct-ng build
+
+# Configure and build the lx106 HAL
+cd ../lx106-hal
+autoreconf -i
+PATH="$TOOLCHAIN/bin:$PATH" ./configure --host=xtensa-lx106-elf --prefix=$TOOLCHAIN/xtensa-lx106-elf/sysroot/usr
+PATH="$TOOLCHAIN/bin:$PATH" make
+PATH="$TOOLCHAIN/bin:$PATH" make install
+
