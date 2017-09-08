@@ -22,10 +22,11 @@ RUN cd /tmp/esp-open-sdk \
   && make toolchain libhal STANDALONE=n
 
 USER root
-RUN cp -r xtensa-lx106-elf /opt \
+RUN mv /tmp/esp-open-sdk/xtensa-lx106-elf /opt \
   && chown -R root:root /opt \
   && rm -rf /tmp/esp-open-sdk \
-  && apt-get remove --purge $BUILD_DEPS
+  && apt-get remove --purge -y --allow-remove-essential $BUILD_DEPS \
+  && apt-get autoremove -y
 
-ENV PATH=/opt/xtensa-lx106-elf
+ENV PATH=/opt/xtensa-lx106-elf/bin:$PATH
 
