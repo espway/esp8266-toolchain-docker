@@ -2,8 +2,13 @@
 
 TOOLCHAIN=/tmp/build/xtensa-lx106-elf
 
-cd crosstool-NG
+# Download some tarballs to speed up the build
+mkdir tarballs
+cd tarballs
+wget "ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.14.tar.bz2"
+
 # Configure and install crosstool-NG 
+cd ../crosstool-NG
 ./bootstrap
 ./configure --prefix=`pwd`
 make
@@ -11,10 +16,7 @@ make install
 
 # Configure and build the target toolchain
 ./ct-ng xtensa-lx106-elf
-echo "CT_DEBUG_gdb=n" >> .config
-echo "CT_STRIP_TARGET_TOOLCHAIN_EXECUTABLES=y" >> .config
-echo "CT_STATIC_TOOLCHAIN=y" >> .config
-echo "CT_INSTALL_DIR_RO=n" >> .config
+cat ../crosstool-config-overrides >> .config
 echo "CT_PREFIX_DIR=$TOOLCHAIN" >> .config
 ./ct-ng build
 
