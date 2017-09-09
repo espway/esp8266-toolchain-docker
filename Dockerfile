@@ -6,9 +6,9 @@ COPY . /tmp/build
 
 ENV DEVEL_DEPS make python
 ENV BUILD_DEPS \
-  libtool-bin gcc g++ gperf automake autoconf flex bison texinfo \
-  help2man sed gawk ncurses-dev wget bzip2 patch python-pip ca-certificates \
-  python-setuptools
+  libtool-bin gcc g++ gperf automake autoconf flex bison texinfo gawk \
+  help2man libncurses5 libncurses5-dev wget bzip2 patch python-pip \
+  ca-certificates python-setuptools
 
 RUN useradd ctng \
   && chown -R ctng /tmp/build \
