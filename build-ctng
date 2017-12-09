@@ -1,29 +1,34 @@
 #!/bin/sh
 
-TOOLCHAIN=/tmp/build/xtensa-lx106-elf
+TOOLCHAIN_DIR=$1
+CTNG_VERSION="1.23.0"
+ctng_dir="crosstool-ng-${CTNG_VERSION}"
+ctng_filename="${ctng_dir}.tar.xz"
+ctng_url="http://crosstool-ng.org/download/crosstool-ng/${ctng_filename}"
 
-# Download some tarballs to speed up the build
-mkdir tarballs
-cd tarballs
-wget "ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.14.tar.bz2"
+# Download and extract crosstool-NG and Xtensa overlay
+wget $ctng_url
+tar xf $ctng_filename
+cd $ctng_dir
+# Extract the overlay
+mkdir overlays
+gzip -d -c ../overlays/xtensa_lx106.tar.gz > overlays/xtensa_lx106.tar
+# Copy the config in place
+cp -r ../ctng-config samples/xtensa-lx106-elf
 
-# Configure and install crosstool-NG 
-cd ../crosstool-NG
-./bootstrap
-./configure --prefix=`pwd`
+# Configure and build crosstool-NG
+./configure --enable-local
 make
-make install
 
 # Configure and build the target toolchain
 ./ct-ng xtensa-lx106-elf
-cat ../crosstool-config-overrides >> .config
-echo "CT_PREFIX_DIR=$TOOLCHAIN" >> .config
+echo "CT_PREFIX_DIR=$TOOLCHAIN_DIR" >> .config
 ./ct-ng build
 
 # Configure and build the lx106 HAL
+PATH=$TOOLCHAIN_DIR/bin:$PATH
 cd ../lx106-hal
 autoreconf -i
-PATH="$TOOLCHAIN/bin:$PATH" ./configure --host=xtensa-lx106-elf --prefix=$TOOLCHAIN/xtensa-lx106-elf/sysroot/usr
-PATH="$TOOLCHAIN/bin:$PATH" make
-PATH="$TOOLCHAIN/bin:$PATH" make install
-
+./configure --host=xtensa-lx106-elf --prefix=$TOOLCHAIN_DIR/xtensa-lx106-elf
+make
+make install
