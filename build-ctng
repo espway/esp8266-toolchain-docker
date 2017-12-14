@@ -20,6 +20,7 @@ make
 ./ct-ng xtensa-lx106-elf
 echo "CT_PREFIX_DIR=$TOOLCHAIN_DIR" >> .config
 ./ct-ng build
+rm -f "$TOOLCHAIN_DIR/build.log.bz2"
 
 # Configure and build the lx106 HAL
 PATH=$TOOLCHAIN_DIR/bin:$PATH
