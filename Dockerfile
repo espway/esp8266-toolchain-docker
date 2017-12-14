@@ -21,5 +21,4 @@ RUN adduser -D ctng \
   && su - ctng -c "cd /tmp/build && ./build-ctng $TOOLCHAIN_DIR" \
   && chown -R root:root $TOOLCHAIN_DIR/.. \
   && rm -rf /tmp/build \
-  && apk del build-deps \
-  && userdel ctng
+  && apk del build-deps
