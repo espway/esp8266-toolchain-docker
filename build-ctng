@@ -1,22 +1,18 @@
 #!/bin/sh
 
-TOOLCHAIN_DIR=$1
-CTNG_VERSION="1.23.0"
-ctng_dir="crosstool-ng-${CTNG_VERSION}"
-ctng_filename="${ctng_dir}.tar.xz"
-ctng_url="http://crosstool-ng.org/download/crosstool-ng/${ctng_filename}"
+TOOLCHAIN_DIR=${1:-/opt/xtensa-lx106-elf}
 
-# Download and extract crosstool-NG and Xtensa overlay
-wget $ctng_url
-tar xf $ctng_filename
-cd $ctng_dir
+cd crosstool-ng
 # Extract the overlay
 mkdir overlays
 gzip -d -c ../overlays/xtensa_lx106.tar.gz > overlays/xtensa_lx106.tar
 # Copy the config in place
 cp -r ../ctng-config samples/xtensa-lx106-elf
+# Copy local patches
+cp -r ../local-patches .
 
 # Configure and build crosstool-NG
+./bootstrap
 ./configure --enable-local
 make
 
