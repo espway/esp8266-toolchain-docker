@@ -7,9 +7,9 @@ cd crosstool-ng
 mkdir overlays
 gzip -d -c ../overlays/xtensa_lx106.tar.gz > overlays/xtensa_lx106.tar
 # Copy the config in place
-cp -r ../ctng-config samples/xtensa-lx106-elf
+cp -rf ../ctng-config samples/xtensa-lx106-elf
 # Copy local patches
-cp -r ../local-patches .
+cp -rf ../local-patches .
 
 # Configure and build crosstool-NG
 ./bootstrap
